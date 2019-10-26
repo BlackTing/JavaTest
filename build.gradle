@@ -1,0 +1,61 @@
+buildscript {
+    ext {
+        springBootVersion = '1.5.10.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+        //添加maven仓库
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        // mybatis-generator 插件路径
+        classpath "gradle.plugin.com.arenagod.gradle:mybatis-generator-plugin:1.4"
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'org.springframework.boot'
+//引入 mybatis-generator 插件
+apply plugin: "com.arenagod.gradle.MybatisGenerator"
+
+group = 'com.nny'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+
+dependencies {
+//    compile('org.springframework.boot:spring-boot-starter-web')
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.1.3.RELEASE'
+    compile('org.springframework.boot:spring-boot-starter-thymeleaf')
+    compile('org.mybatis.spring.boot:mybatis-spring-boot-starter:1.3.2')
+    //引入mybatis代码生成器相关的依赖
+    compile group: 'org.mybatis.generator', name: 'mybatis-generator-core', version: '1.3.2'
+    compile group: 'org.springframework.boot', name: 'spring-boot-configuration-processor', version: '2.1.0.RELEASE'
+    runtime('mysql:mysql-connector-java')
+    testCompile('org.springframework.boot:spring-boot-starter-test')
+    //使用webflux
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-webflux', version: '2.1.4.RELEASE'//必要
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-mongodb-reactive', version: '2.1.3.RELEASE'
+    compile group: 'io.projectreactor', name: 'reactor-core', version: '3.2.3.RELEASE' //必要
+    compile group: 'org.springframework', name: 'spring-web', version: '5.1.5.RELEASE'
+    compile group: 'org.springframework', name: 'spring-core', version: '5.1.5.RELEASE'
+}
+
+configurations {
+    mybatisGenerator
+}
+
+// mybatis-generator.xml 配置路径
+mybatisGenerator {
+    verbose = true
+    configFile = 'src/main/resources/generator.xml'
+}
+

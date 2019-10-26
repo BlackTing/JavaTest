@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Title</title>
+    <script>
+
+    </script>
+</head>
+<body>
+<h1>shishi</h1>
+<!--img标签：测试头像下载、显示
+
+<div>   
+    <img src="@{http://localhost:8888/showImage/{pid}(pid=${pid})}"/> 
+</div>
+-->
+
+
+<!--
+<a th:href="@{/showImage/{pid}(pid=${pid})}" ></a>
+-->
+<!--
+<form action="/perInfo/setsubmit/10002" method="POST" enctype="multipart/form-data">
+    <input name="file" type="file"/>
+    <input type="submit" value="上传头像"/>
+</form>
+-->
+<form action="/addmassage" method="POST">
+    <input name="pid" type="text"/>
+    <input name="cid" type="text"/>
+    <input name="contents" type="text"/>
+    <input name="obsververpicpath" type="text"/>
+    <input value="提交" type="submit"/>
+</form>
+</body>
+</html>

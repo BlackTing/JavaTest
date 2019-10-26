@@ -1,0 +1,56 @@
+<!--<?xml version="1.0" encoding="UTF-8"?>-->
+<!--<!DOCTYPE generatorConfiguration-->
+        <!--PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"-->
+        <!--"http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">-->
+<!--<generatorConfiguration>-->
+    <!--<context id="my" targetRuntime="MyBatis3">-->
+
+        <!--&lt;!&ndash;自动实现Serializable接口&ndash;&gt;-->
+        <!--<plugin type="org.mybatis.generator.plugins.SerializablePlugin"></plugin>-->
+
+        <!--&lt;!&ndash; 去除自动生成的注释 &ndash;&gt;-->
+        <!--<commentGenerator>-->
+            <!--<property name="suppressAllComments" value="true"/>-->
+        <!--</commentGenerator>-->
+
+        <!--&lt;!&ndash;数据库基本信息&ndash;&gt;-->
+        <!--<jdbcConnection driverClass="com.mysql.jdbc.Driver"-->
+                        <!--connectionURL="jdbc:mysql://192.168.1.22:3306/nnyschdb"-->
+                        <!--userId="root"-->
+                        <!--password="nny2018.com@shen">-->
+        <!--</jdbcConnection>-->
+
+        <!--&lt;!&ndash;生成实体类的位置以及包的名字&ndash;&gt;-->
+        <!--&lt;!&ndash;同样Mac用户：targetProject 为全路径&ndash;&gt;-->
+        <!--<javaModelGenerator targetPackage="com.nny.Demo.model" targetProject="src/main/java">-->
+            <!--&lt;!&ndash; enableSubPackages:是否让schema作为包的后缀 &ndash;&gt;-->
+            <!--<property name="enableSubPackages" value="true"/>-->
+            <!--&lt;!&ndash; 从数据库返回的值被清理前后的空格 &ndash;&gt;-->
+            <!--<property name="trimStrings" value="true"/>-->
+        <!--</javaModelGenerator>-->
+
+        <!--&lt;!&ndash;生成映射文件存放位置&ndash;&gt;-->
+        <!--&lt;!&ndash;同样Mac用户：targetProject 为全路径&ndash;&gt;-->
+        <!--<sqlMapGenerator targetPackage="mapping" targetProject="src/main/resources">-->
+            <!--&lt;!&ndash; enableSubPackages:是否让schema作为包的后缀 &ndash;&gt;-->
+            <!--<property name="enableSubPackages" value="false"/>-->
+        <!--</sqlMapGenerator>-->
+
+        <!--&lt;!&ndash;生成Dao类存放位置,mapper接口生成的位置&ndash;&gt;-->
+        <!--&lt;!&ndash;同样Mac用户：targetProject 为全路径&ndash;&gt;-->
+        <!--<javaClientGenerator type="XMLMAPPER" targetPackage="com.nny.Demo.dao" targetProject="src/main/java">-->
+            <!--&lt;!&ndash; enableSubPackages:是否让schema作为包的后缀 &ndash;&gt;-->
+            <!--<property name="enableSubPackages" value="false"/>-->
+        <!--</javaClientGenerator>-->
+
+        <!--&lt;!&ndash; 配置表信息 &ndash;&gt;-->
+        <!--&lt;!&ndash; schema即为数据库名 tableName为对应的数据库表 domainObjectName是要生成的实体类 enable*ByExample-->
+            <!--是否生成 example类 &ndash;&gt;-->
+        <!--<table schema="nnyschdb" tableName="system_userpassword"-->
+               <!--domainObjectName="UserPassword" enableCountByExample="false"-->
+               <!--enableDeleteByExample="false" enableSelectByExample="false"-->
+               <!--enableUpdateByExample="false">-->
+        <!--</table>-->
+
+    <!--</context>-->
+<!--</generatorConfiguration>-->

@@ -1,0 +1,7 @@
+# date 2019.3.19
+# writer liting
+# content 使用对象映射的方法来读取这个属性文件,这表示的是一个data对象中的list结构的参数
+data:
+  grades:
+  - 一年级
+  - 二年级
