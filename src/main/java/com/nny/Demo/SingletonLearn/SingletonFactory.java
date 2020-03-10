@@ -3,6 +3,7 @@ package com.nny.Demo.SingletonLearn;
 public class SingletonFactory {
     // 内部枚举类
     private enum EnmuSingleton{
+
         Singleton;
         private Singleton8 singleton;
 
@@ -14,6 +15,7 @@ public class SingletonFactory {
             return singleton;
         }
     }
+
     public static Singleton8 getInstance() {
         return EnmuSingleton.Singleton.getInstance();
     }

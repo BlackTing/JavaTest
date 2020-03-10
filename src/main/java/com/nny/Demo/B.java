@@ -1,13 +1,14 @@
 package com.nny.Demo;
 
 
+import com.nny.Demo.project.AnalysisOriginalData;
 import com.nny.Demo.DataStructureLearn.LinkStackLearn;
 import com.nny.Demo.DataStructureLearn.QueueLearn;
-import com.nny.Demo.ThreadTest.LearnVolatile.VolatileFeaturesExample;
+import com.nny.Demo.SingletonLearn.Singleton2;
+import com.nny.Demo.ThreadTest.VolatileFeaturesExample;
 import com.nny.Demo.domain.User;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.PathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.WritableResource;
 
 import java.io.*;
@@ -16,6 +17,7 @@ import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.CountDownLatch;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -26,9 +28,383 @@ public class B {
     public static int name =0;
     public static List<Thread> threadList = new ArrayList<>();
 
-    public static void main(String args[]) {
+    public static final List list = new ArrayList();
+
+    public static int next = 1;//下个小岛在b中的空间
+
+    public static void main0(String args[]) {
 
     }
+
+    /**
+     * 子线程准备就绪：start()
+     * 子线程等待所有子线程准备就绪：latch.await()
+     *
+     * 主线程唤醒200次，所有子线程同时被唤醒： latch.countDown()
+     *
+     * 所有子线程同时执行：Singleton1 instance = Singleton1.getInstance()
+     */
+    public static void singletonTest() {
+        int count = 200;
+        final CountDownLatch latch = new CountDownLatch(count);
+
+        for(int i = 0; i < count;i++){
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+
+                    try {
+                        //等待
+                        latch.await();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    Singleton2 instance = Singleton2.getInstance();
+                    System.out.println(System.currentTimeMillis() + ":" + instance);
+                }
+            }).start();
+
+            latch.countDown();
+        }
+    }
+
+    /**
+     * 逻辑运算符
+     */
+    public static void logicalOperator(){
+        logicalOperator0();
+    }
+    public static void logicalOperator0(){
+        /**
+         * &&和&的区别
+         * &&，当条件1=false,则不再执行条件2
+         * &，当条件1=false,也执行条件2
+         */
+        int i = 3;
+        int j = 3;
+        int x = 3;
+        boolean a = i==2 && j++ == 3;
+        boolean b = i==2 & x++ == 3;
+        System.out.println(j+" "+x);//j=3 x=4
+    }
+
+    public static void logicalOperator1(){
+        /**
+         * ||与|的区别
+         * 和 '&&与&的区别'很类似
+         */
+        int i = 3;
+        int j = 3;
+        int x = 3;
+        boolean a = i==3 || j++ == 3;
+        boolean b = i==3 | x++ == 3;
+        System.out.println(j+" "+x);//j=3 x=4
+    }
+
+    /**
+     * 二进制运算
+     */
+    public static void binaryCount(){
+        /**
+         * 交运算
+         *   0000 0111
+         * & 0000 0011
+         * = 0000 0011
+         */
+        byte a = 7;
+        byte b = 3;
+        int c = a&b; //3
+    }
+
+    //小岛
+
+    /**
+     * 思路：
+     * 逐行遍历
+     * 依据以下规则对原矩阵进行转换，只需维护当前行与当前行的上一行的转换结果
+     * 规则：
+     * 如果是1，表示墙，转换为-1；
+     * 如果是0，分两种情况，第一种：通过判左侧、上侧、右侧（借助递归进行判断），发现为有效0，转换为小岛的序号（依据小岛的序号，可以在存储小岛面积的数组中找到该小岛的大小），
+     *                  第二种，通过判左侧、上侧、右侧，发现为无效0，表示洞，转换为-2。
+     * 以上即为规则。
+     * 总的来说，依据上一行的转换结果，来生成当前行的转换结果，生成当前行的转换结果的同时，更新上一行的转换结果。在此过程中，需要通过以下操作维护小岛的面积：
+     * 1、记录可能的小岛；
+     * 2、增大小岛面积；
+     * 3、合并小岛；
+     * 4、删除假的小岛。
+     * 最后，在记录着所有小岛面积的数组中，得到第二岛的面积并输出。
+     *
+     * @param r
+     * @return
+     */
+
+    /**
+     *时间复杂度
+     * T(n)=O(n)
+     *
+     * 元素个数为n
+     * 逐行遍历数组，每行遍历中，左侧和上侧比较时间复杂度是1，右侧比较需要递归，但递归的同时也是在继续进行列遍历，所以对于一个元素而言，总的还是比较3次，
+     * 不过在删除小岛或小岛合并时，有一些赋值操作，赋值操作的时间复杂度是1.求第二小岛面积时，遍历b数组的next元素，一个元素被比较两次，每次比较的时间复杂度是1，
+     * 所以，时间复杂度是线性级别的。
+     *
+     */
+
+    /**
+     *
+     *空间复杂度
+     * O（n)
+     *
+     * 需要：
+     * 1、两个与r[]数组同宽度的数组
+     * 2、递归调用的栈空间，深度不超过r[]数组的宽度
+     * 3、存储小岛大小的b数组，小于元素个数的一半
+     * 总的来说，是线性级别的。
+     *
+     */
+    public static int count2(int[][] r){
+
+        int h = r.length; //行数
+        int l = r[0].length; //列数
+
+        if(h<3 || l<3)
+            return 0;
+
+        int[] h1 = new int[l];//用于存储上一行的转换结果
+        int[] h2 = new int[l];//本行
+
+
+        int a = (h*l-2*l-2*(h-1))/2+2;//对可能的小岛个数做了一个优化
+        int[] b = new int[a];//b中每个元素代表一个小岛的大小
+
+        //初始化h1
+        for(int y=0; y<l; y++){
+            if(r[0][y] == 1)
+                h1[y] = -1;//墙
+            else
+                h1[y] = -2;//洞
+        }
+
+        for(int x=1;x<h;x++){//第二行开始，逐行遍历
+
+            //更新h2
+            for(int y=0;y<l;y++) {
+
+                if (r[x][y] == 1) {
+                    h2[y] = -1;
+                }
+                else {
+                    if(x == h-1){//最后一行单独处理
+
+                        //更新h1部分
+                        if (h1[y] > 0)
+                            b[h1[y]] = 0;//清空小岛大小
+
+                    }
+                    else {
+                        if (y == 0 || y == l - 1) //边0
+                            h2[y] = -2;
+                        else {
+                            if (h1[y] == -2) //上面是洞
+                                h2[y] = -2;
+                            else if (h2[y-1] == -2) { //左面是洞
+
+                                h2[y] = -2;
+
+                                //更新h1部分
+                                if (h1[y] > 0) {
+
+                                    int e = h1[y];
+                                    b[e] = 0;//清空小岛大小，即删除小岛
+
+                                    int d = y;
+                                    while (h1[d] > 0) {
+                                        h1[d] = -2;
+                                        d++;
+                                    }
+                                }
+                            }
+                            else //上面左面都不是洞，那就得判断右边是不是洞
+                                y = count3(r, x, y, h1, h2, b);//返回y，意思是y以前的列都转换好了，继续转换y之后的列
+                        }
+                    }
+                }
+            }
+
+            int[] temp = h1;
+            h1 = h2;
+            h2 = temp;
+
+        }
+
+        //下面开始求次大的小岛的面积
+
+        int m1 = b[1];//最大
+        int m2 = b[2];//次大
+
+        for(int i=2; i<next; i++){ //next表示：出现的可能的小岛的总个数+1
+            if(b[i] > m1){
+                m2 = m1;
+                m1 = b[i];
+            }
+            else if(b[i] > m2)
+                m2 = b[i];
+        }
+
+        if(m2 != 0)
+            return m2;
+        else
+            return m1;
+    }
+
+    public static int count3(int[][] r,int x,int y,int[] l1,int[] l2,int[] b){
+
+        int a = y;//表示已经转换好的最后一个列号
+
+        if(y == r[0].length-1)//y是最后一列
+            l2[y] = -2;
+        else if (r[x][y+1] == 0 && l1[y+1] == -2) {//后一列的上一行是洞
+            l2[y+1] = -2;
+            l2[y] = -2;
+            a = y+1;
+        }
+        else if (r[x][y+1] == 0 && l1[y+1] != -2) {
+
+            a = count3(r, x,y+1,l1,l2,b);//进行递归
+            int e = 0;
+
+            if(l2[y+1] == -2){
+
+                l2[y] = -2;
+
+                if(l1[y] > 0){
+                    l1[y] = -2;
+                    b[l1[y]] = 0;//清空小岛大小
+                }
+
+            }
+            else if(l2[y+1] == -1){
+
+                if(l1[y] > 0) {
+                    l2[y] = l1[y];
+                    b[l1[y]]++; //增加小岛面积
+                }
+                else{
+                    l2[y] = next;//记录新的小岛
+                    b[next]++;
+                    next++;
+                }
+            }
+            else{
+
+                l2[y] = l2[y+1];
+
+                if(l1[y] < 0){
+                    l2[y] = l2[y+1];
+                    e = l2[y];
+                    b[e]++;
+                }
+                else {
+                    if(l1[y] == l2[y+1])
+                        b[l2[y+1]]++;
+                    else{ //合并小岛
+                        e = l2[y];
+                        b[e] = b[e] + b[l1[y]] + 1;
+                        b[l1[y]] = 0;
+                        int d = y;
+                        int c = l1[y];
+                        while(l1[d] == c){
+                            l1[d] = l2[y];
+                            d--;
+                        }
+
+                    }
+                }
+            }
+        }
+        else {// if (r[x][y+1] == 1)
+            l2[y+1] = -1;
+            if(l1[y] < 0){
+                l2[y] = next;
+                b[next]++;
+                next++;
+            }
+            else{
+                l2[y] = l1[y];
+                b[l1[y]]++;
+            }
+            a = y+1;
+        }
+        return a;
+    }
+
+
+
+    //炒股票
+
+    /**
+     * 由于最多可以交易两次，第一次的卖出看做一个分隔点，来分隔两次交易，从而出现两个区间
+     * 对于每个分隔点，求两个区间的最大利润，求和就是此分隔点时的最大利润。
+     * 遍历分隔点，得到每个分隔点的最大利润，比较得出利润最高值。
+     * @param r
+     * @param k
+     * @return
+     */
+    /**
+     * 没有理解K的含义，所以按照k=1计算的。
+     */
+    public static int count1(int[] r,int k){
+        int[][] sum = new int[r.length][2];
+        int i=0;//区间1的最小值下标
+        int j=1;//区间1的游标
+        int x=r.length-1;//区间2的最大值下标
+        int y=x-1;//区间2的游标
+        int max=0;
+        int result = 0;//最大利润
+
+        while(j < r.length){
+            if(r[j] > r[i]){ //刷新最大利润
+                max = r[j]-r[i] > max ? r[j]-r[i] : max;
+            }
+            else{
+                i = j;
+            }
+            sum[j][0] = max;
+            j++;
+        }
+
+        while(y > 1){
+            if(r[y] < r[x]){//刷新最大利润
+                max = r[x]-r[y] > max ? r[x]-r[y] : max;
+            }
+            else{
+                x = y;
+            }
+            sum[y-1][1] = max;
+            y--;
+        }
+
+        for(int o=1;o<r.length;o++){
+            result = sum[o][0]+sum[o][1] > result ? sum[o][0]+sum[o][1] : result;
+        }
+        return result;
+    }
+
+    /**
+     * 遍历一次数组，找出每个分隔点时，区间1的最大利润。
+     *
+     * 再遍历一次数组，找出每个分隔点时，区间2的最大利润。
+     *
+     * 时间复杂度是O(n).
+     *
+     * 利用一个二维数组存储每个分隔点时，区间1和区间2的最大利润。
+     *
+     * 空间复杂度是O(n).
+     */
+
+
+
 
 
 
@@ -935,7 +1311,7 @@ public class B {
             stream1.write("欢迎光临".getBytes());
             stream1.close();
 
-            Resource res2 = new ClassPathResource("file.txt");//文件需要放在resources文件夹下，不能放在java文件夹下
+            ClassPathResource res2 = new ClassPathResource("file.txt");//文件需要放在resources文件夹下，不能放在java文件夹下
             InputStream ins2 = res2.getInputStream();
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             int i;
